@@ -24,7 +24,7 @@ export class PhotoEditorComponent implements OnInit {
   constructor(private authService: AuthService, private userService: UserService, private alertify: AlertifyService) { }
 
   ngOnInit() {
-    this.initializeUplader();
+    this.initializeUploder();
   }
 
   fileOverBase(e: any ): void {
@@ -32,7 +32,7 @@ export class PhotoEditorComponent implements OnInit {
 
   }
 
-  initializeUplader() {
+  initializeUploder() {
     this.uploader = new FileUploader({
       url: this.baseUrl + 'users/' + this.authService.decodedToken.nameid + '/photos',
       authToken: 'Bearer ' + localStorage.getItem('token'),
@@ -57,6 +57,11 @@ export class PhotoEditorComponent implements OnInit {
           isMain: res.isMain
         };
         this.photos.push(photo);
+        if(photo.isMain){
+          this.authService.changeMemberPhoto(photo.url);
+          this.authService.currentUser.photoUrl = photo.url;
+          localStorage.setItem('user', JSON.stringify(this.authService.currentUser));
+        }
       }
     };
   }
